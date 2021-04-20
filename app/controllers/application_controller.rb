@@ -28,20 +28,20 @@ class ApplicationController < ActionController::Base
     @apr = params.fetch("user_apr").to_f
     @num_years = params.fetch("user_years").to_f
     @principal = params.fetch("user_pv").to_f
-    
-    @apr_display = @apr.to_s(:percentage, {:precision => 4})
-    @num_years_display = @num_years.to_i
-    @principal_display = @principal.to_s(:currency) 
 
     @pv = @principal
     @n = @num_years * 12
-    @r = @apr / 100 / 12
+    @r = @apr / (100*12)
 
-    @numerator = @pv * @apr
-    @denominator = 1+(1+@apr)**(-@n)
+    @numerator = ((1+@r)**@n)-1
+    @denominator = @r*((1+@r)**@n)
+    @payment = @pv/(@numerator/@denominator)
 
-    @payment = @numerator / @denominator
-    @payment_display
+      
+    @apr_display = @apr.to_s(:percentage, {:precision => 4})
+    @num_years_display = @num_years.to_i
+    @principal_display = @principal.to_s(:currency) 
+    @payment_display = @payment.to_s(:currency)
     
     render({:template => "calculation_templates/payment_results.html.erb"})
   end
