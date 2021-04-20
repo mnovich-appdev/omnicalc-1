@@ -33,10 +33,10 @@ class ApplicationController < ActionController::Base
   end
 
   def calculate_random
+    @min_num = params.fetch("user_min_num").to_f
+    @max_num = params.fetch("user_max_num").to_f
+    @rand_num = rand(@min_num...@max_num)
     render({:template => "calculation_templates/random_results.html.erb"})
-    @min_num = params.fetch("min_num").to_f
-    @max_num = params.fetch("max_num").to_f
-    @rand_number = rand(@min_num..@max_num)
   end
 
 end
